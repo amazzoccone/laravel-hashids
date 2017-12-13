@@ -10,12 +10,17 @@ use Hashids\Hashids;
 class Converter
 {
     /**
+     * @var \Hashids\Hashids
+     */
+    private $hashids;
+
+    /**
      * PublicIdsConverter constructor.
      */
-    public function __construct()
+    public function __construct($config)
     {
-        $salt = env('HASHIDS_SALT', 'Bondacom');
-        $minLength = 12;
+        $salt = $config['salt'];
+        $minLength = $config['length'];
 
         $this->hashids = new Hashids($salt, $minLength);
     }

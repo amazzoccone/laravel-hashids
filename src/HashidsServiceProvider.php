@@ -19,7 +19,7 @@ class HashidsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/../config/hashids.php' => config_path('hashids.php'),
+            __DIR__.'/config/hashids.php' => config_path('hashids.php'),
         ]);
     }
 
@@ -28,6 +28,10 @@ class HashidsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/hashids.php', 'hashids');
+        $this->app->bind(Converter::class, function ($app) {
+            $config = $app->config->get('hashids');
+
+            return new Converter($config);
+        });
     }
 }
