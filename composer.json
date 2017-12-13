@@ -1,0 +1,17 @@
+{
+    "name": "andresmazzo/laravel-hashids",
+    "description": "Laravel package to hash ids",
+    "require": {
+        "php": "^7.1",
+        "hashids/hashids": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0",
+        "orchestra/testbench": "~3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bondacom\\LaravelHashids\\" : "src/"
+        }
+    },
+}
