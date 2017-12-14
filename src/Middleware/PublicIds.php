@@ -3,6 +3,7 @@
 namespace Bondacom\LaravelHashids\Middleware;
 
 use Bondacom\LaravelHashids\Converter;
+use Bondacom\LaravelHashids\RequestDecoder;
 use Closure;
 
 /**
@@ -21,11 +22,6 @@ use Closure;
 class PublicIds
 {
     /**
-     * @var \Bondacom\LaravelHashids\Converter
-     */
-    protected $converter;
-
-    /**
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request $request
@@ -34,38 +30,13 @@ class PublicIds
      */
     public function handle($request, Closure $next)
     {
-        $this->converter = app(Converter::class);
-
-        $request = $this->decodeRequestIds($request);
+        $request = app(RequestDecoder::class)->handle($request);
 
         $response = $next($request);
 
         $this->encodeResponseIds($response);
 
         return $response;
-    }
-
-    /**
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Request
-     */
-    protected function decodeRequestIds($request)
-    {
-        //Decode route parameters
-        $parametersDecoded = $this->converter->decode($request->route()->parameters(), false);
-        foreach ($parametersDecoded as $key => $value) {
-            $request->route()->setParameter($key, $value);
-        }
-
-        //Decode header attributes
-        $headers = array_map('current', $request->headers->all());
-        $headersDecoded = $this->converter->decode($headers);
-        $request->headers->replace($headersDecoded);
-
-        //Decode request attributes
-        $request->replace($this->converter->decode($request->all()));
-
-        return $request;
     }
 
     /**
