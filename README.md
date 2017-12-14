@@ -36,10 +36,11 @@ Important: Remember to set a salt!
 
 It's really simple! 
 Register the middleware (globally, to specific routes, in a group).
->For more information about middleware check out: [Laravel Middleware Documentation](https://laravel.com/docs/5.5/middleware)
->IMPORTANT: Always register it before Laravel bindings middleware.
 
-If you already have any GET endpoint which the response contains an id, request it and all your ids will now be hashed.
+**IMPORTANT:** Always register it before Laravel bindings middleware.
+>For more information about middleware check out: [Laravel Middleware](https://laravel.com/docs/5.5/middleware)
+
+If you already have any endpoint which the response contains an id, request it and all your ids will now be hashed.
 
 ### Examples
 - Create a new route that returns a list of entities.
