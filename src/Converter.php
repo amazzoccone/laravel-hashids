@@ -75,6 +75,9 @@ class Converter
         return $collection->map(function ($value, $key) use ($closure, $onlyIds, $attributes) {
             try {
                 if (is_array($value)) {
+                    if($this->checker->isAnId($key)) {
+                        $onlyIds = false;
+                    }
                     return $this->mapValues($value, $closure, $onlyIds);
                 }
                 if ((!$onlyIds || $this->checker->isAnId($key)) && !is_null($value)) {

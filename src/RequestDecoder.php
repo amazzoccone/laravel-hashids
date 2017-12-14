@@ -62,6 +62,7 @@ class RequestDecoder
     protected function decodeRouteParameters()
     {
         $parameters = $this->request->route()->parameters();
+        //IMPORTANT: Pass onlyids as false. Must decode all route parameters!
         $parametersDecoded = $this->converter->decode($parameters, false);
 
         foreach ($parametersDecoded as $key => $value) {
