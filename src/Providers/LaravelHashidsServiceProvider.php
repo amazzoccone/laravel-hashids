@@ -13,7 +13,7 @@ class LaravelHashidsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__.'/config/hashids.php' => config_path('hashids.php'),
+            __DIR__.'/../config/hashids.php' => config_path('hashids.php'),
         ]);
     }
 

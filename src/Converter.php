@@ -21,6 +21,8 @@ class Converter
 
     /**
      * PublicIdsConverter constructor.
+     *
+     * @param array $config
      */
     public function __construct($config)
     {
