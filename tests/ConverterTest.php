@@ -52,7 +52,26 @@ class ConverterTest extends TestCase
     /**
      * @test
      */
-    public function it_encode_arrays_without_keys()
+    public function it_decode_hash_ids()
+    {
+        $systemData = [
+            'id' => 1,
+            'name' => 'John',
+            'email' => 'johndoe@gmail.com',
+            'role_id' => 3,
+            'provider_id' => null
+        ];
+        $encodedData = $this->converter->encode($systemData);
+
+        $decodedData = $this->converter->decode($encodedData);
+
+        $this->assertEquals($systemData, $decodedData);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_encode_arrays_without_ids()
     {
         $data = [
             'data' => [
@@ -71,19 +90,21 @@ class ConverterTest extends TestCase
     /**
      * @test
      */
-    public function it_decode_hash_ids()
+    public function it_encode_arrays_with_ids()
     {
-        $systemData = [
-            'id' => 1,
-            'name' => 'John',
-            'email' => 'johndoe@gmail.com',
-            'role_id' => 3,
-            'provider_id' => null
+        $data = [
+            'genders_id' => [
+                '1',
+                '2',
+            ],
+            'meta' => [
+                'First meta'
+            ]
         ];
-        $encodedData = $this->converter->encode($systemData);
 
-        $decodedData = $this->converter->decode($encodedData);
-
-        $this->assertEquals($systemData, $decodedData);
+        $encodedData = $this->converter->encode($data);
+        $this->assertEquals($data['meta'], $encodedData['meta']);
+        $this->assertNotEquals($data['genders_id'], $encodedData['genders_id']);
+        $this->assertTrue(is_array($encodedData['genders_id']));
     }
 }
