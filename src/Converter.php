@@ -2,7 +2,7 @@
 
 namespace Bondacom\LaravelHashids;
 
-use Bondacom\LaravelHashids\Exceptions\PublicIdsConverterException;
+use Bondacom\LaravelHashids\Exceptions\ConverterException;
 use Closure;
 use Exception;
 use Hashids\Hashids;
@@ -80,7 +80,7 @@ class Converter
                 }
                 return $value;
             } catch (Exception $e) {
-                throw new PublicIdsConverterException();
+                throw new ConverterException();
             }
         })->toArray();
     }
