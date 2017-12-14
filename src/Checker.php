@@ -2,7 +2,6 @@
 
 namespace Bondacom\LaravelHashids;
 
-
 class Checker
 {
     /**
@@ -31,7 +30,9 @@ class Checker
         }
 
         $acceptedEndingIds = ['_'.$this->keyName, '-'.$this->keyName];
-        return in_array(substr($field, -3), $acceptedEndingIds);
+        $length = strlen($this->keyName) + 1;
+
+        return in_array(substr($field, -$length), $acceptedEndingIds);
     }
 
     /**
