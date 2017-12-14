@@ -1,10 +1,10 @@
 <?php
 
-namespace Bondacom\LaravelHashids;
+namespace Bondacom\LaravelHashids\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class HashidsServiceProvider extends ServiceProvider
+class LaravelHashidsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application events.
