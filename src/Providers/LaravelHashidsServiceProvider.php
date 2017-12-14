@@ -2,6 +2,7 @@
 
 namespace Bondacom\LaravelHashids\Providers;
 
+use Bondacom\LaravelHashids\Converter;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelHashidsServiceProvider extends ServiceProvider
