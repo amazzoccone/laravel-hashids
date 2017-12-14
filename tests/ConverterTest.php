@@ -22,17 +22,6 @@ class ConverterTest extends TestCase
     /**
      * @test
      */
-    public function it_check_if_field_is_an_id()
-    {
-        $this->assertTrue($this->converter->isAnId('id'));
-        $this->assertTrue($this->converter->isAnId('role_id'));
-        $this->assertFalse($this->converter->isAnId('id_role'));
-        $this->assertFalse($this->converter->isAnId('provider'));
-    }
-
-    /**
-     * @test
-     */
     public function it_encode_system_ids()
     {
         $systemData = [
