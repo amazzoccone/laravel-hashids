@@ -13,7 +13,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider::class
+            \Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider::class
         ];
     }
 }
