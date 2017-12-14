@@ -4,6 +4,17 @@ namespace Bondacom\LaravelHashids;
 
 use Illuminate\Http\Request;
 
+/**
+ * Class RequestDecoder
+ *
+ * Convert public ids (from query and headers) and route parameters to system ids
+ *   - IDs Query parameters :
+ *     Ex: http://example.dev/users?name=John&provider_id=daQm9M4qejxl  decode only provider_id
+ *   - Route parameters:
+ *     Ex: http://example.dev/providers/daQm9M4qejxl/users/2AgmKnp29Bjv/orders decode ALL the route parameters
+ *   - IDs header:
+ *     Ex: Consumer-ID,
+ */
 class RequestDecoder
 {
     /**

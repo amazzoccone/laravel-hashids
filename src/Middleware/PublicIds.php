@@ -4,6 +4,7 @@ namespace Bondacom\LaravelHashids\Middleware;
 
 use Bondacom\LaravelHashids\Converter;
 use Bondacom\LaravelHashids\RequestDecoder;
+use Bondacom\LaravelHashids\ResponseEncoder;
 use Closure;
 
 /**
@@ -34,18 +35,6 @@ class PublicIds
 
         $response = $next($request);
 
-        $this->encodeResponseIds($response);
-
-        return $response;
-    }
-
-    /**
-     * @param  $response
-     */
-    protected function encodeResponseIds($response)
-    {
-        $content = json_decode($response->getContent(), true);
-        $encodedContent = json_encode($this->converter->encode($content));
-        $response->setContent($encodedContent);
+        return app(ResponseEncoder::class)->handle($response);
     }
 }
