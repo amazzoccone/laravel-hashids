@@ -27,7 +27,7 @@ composer require Bondacom/laravel-hashids
 ### Configuration
 Copy the config file into your project by running
 ```
-php artisan vendor:publish --provider="Bondacom\LaravelHashids\Providers\HashidsServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider"
 ```
 Here you can change the key name.
 Important: Remember to set a salt!

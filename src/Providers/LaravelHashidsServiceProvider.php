@@ -22,9 +22,8 @@ class LaravelHashidsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(Converter::class, function ($app) {
-            $config = $app->config->get('hashids');
-
+        $config = config('hashids');
+        $this->app->bind(Converter::class, function ($app) use ($config) {
             return new Converter($config);
         });
     }

@@ -23,7 +23,7 @@ class PublicIds
     /**
      * @var \Bondacom\LaravelHashids\Converter
      */
-    protected $publicIdsConverter;
+    protected $converter;
 
     /**
      * Handle an incoming request.
@@ -34,7 +34,7 @@ class PublicIds
      */
     public function handle($request, Closure $next)
     {
-        $this->publicIdsConverter = app(Converter::class);
+        $this->converter = app(Converter::class);
 
         $request = $this->decodeRequestIds($request);
 
@@ -52,18 +52,18 @@ class PublicIds
     protected function decodeRequestIds($request)
     {
         //Decode route parameters
-        $parametersDecoded = $this->publicIdsConverter->decode($request->route()->parameters(), false);
+        $parametersDecoded = $this->converter->decode($request->route()->parameters(), false);
         foreach ($parametersDecoded as $key => $value) {
             $request->route()->setParameter($key, $value);
         }
 
         //Decode header attributes
         $headers = array_map('current', $request->headers->all());
-        $headersDecoded = $this->publicIdsConverter->decode($headers);
+        $headersDecoded = $this->converter->decode($headers);
         $request->headers->replace($headersDecoded);
 
         //Decode request attributes
-        $request->replace($this->publicIdsConverter->decode($request->all()));
+        $request->replace($this->converter->decode($request->all()));
 
         return $request;
     }
@@ -74,7 +74,7 @@ class PublicIds
     protected function encodeResponseIds($response)
     {
         $content = json_decode($response->getContent(), true);
-        $encodedContent = json_encode($this->publicIdsConverter->encode($content));
+        $encodedContent = json_encode($this->converter->encode($content));
         $response->setContent($encodedContent);
     }
 }
