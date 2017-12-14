@@ -1,5 +1,5 @@
 {
-    "name": "andresmazzo/laravel-hashids",
+    "name": "bondacom/laravel-hashids",
     "description": "Laravel package to hash ids",
     "require": {
         "php": "^7.1",
