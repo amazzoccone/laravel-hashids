@@ -1,6 +1,10 @@
 <?php
 
-class TestCase extends Orchestra\Testbench\TestCase
+namespace Bondacom\Tests;
+
+use Orchestra\Testbench\TestCase as BaseTestCase;
+
+abstract class TestCase extends BaseTestCase
 {
     /**
      * @param $app
@@ -9,8 +13,7 @@ class TestCase extends Orchestra\Testbench\TestCase
     protected function getPackageProviders($app)
     {
         return [
-            '\Bondacom\LaravelHashids\HashidsServiceProvider'
+            '\Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider'
         ];
     }
-
 }

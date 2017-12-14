@@ -1,5 +1,7 @@
 <?php
 
+namespace Bondacom\Tests;
+
 use Bondacom\LaravelHashids\Converter;
 use Carbon\Carbon;
 
