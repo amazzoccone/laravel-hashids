@@ -4,6 +4,7 @@ namespace Bondacom\Tests;
 
 use Bondacom\LaravelHashids\RequestDecoder;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Carbon\Carbon;
 
 class RequestDecoderTest extends TestCase
@@ -21,13 +22,28 @@ class RequestDecoderTest extends TestCase
     }
 
     /**
+     * @param $uri
+     * @param $method
+     * @param array $parameters
+     * @param array $headers
+     */
+    protected function simulateRequest($uri, $method, array $parameters = [], array $headers = [])
+    {
+        $request = Request::create('', $method);
+        $request->headers->replace($headers);
+        $request->setRouteResolver(function () use ($request, $uri, $method, $parameters) {
+            return (new Route($method, $uri, []))->bind($request);
+        });
+    }
+
+    /**
      * @test
      */
     public function it_decode_headers_from_requests()
     {
         $consumerId = 341;
-        $request = Request::create('users', 'GET');
-        $request->headers->add([
+
+        $request = $this->simulateRequest('users', 'GET', [], [
             'Consumer-ID' => $this->encode($consumerId)
         ]);
 
@@ -43,7 +59,9 @@ class RequestDecoderTest extends TestCase
     public function it_decode_route_parameters_from_requests()
     {
         $userId = 341;
-        $request = Request::create('users/{{user}}', 'GET', ['user' => $this->encode($userId)]);
+        $request = $this->simulateRequest('users/{{user}}', 'GET', [
+            'user' => $this->encode($userId)
+        ]);
 
         $requestDecoded = $this->decoder->handle($request);
 
