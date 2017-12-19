@@ -36,13 +36,15 @@ class ResponseEncoderTest extends TestCase
 
         $responseEncoded = $this->encoder->handle($response);
 
-        $responseEncoded->assertStatus(200);
-        $responseEncoded->assertJsonStructure([
+        $this->assertEquals(200, $responseEncoded->getStatusCode());
+        $content = json_decode($responseEncoded->getContent(), true);
+
+        $this->assertEquals(array_keys($content['data']), [
             'id',
             'name',
             'email',
-            'role_id',
-        ]);
+            'role_id']
+        );
     }
 
     /**
@@ -61,14 +63,11 @@ class ResponseEncoderTest extends TestCase
         $response = response(compact('data'), 200);
 
         $responseEncoded = $this->encoder->handle($response);
-        
-        $responseEncoded->assertJson([
-            'name' => 'John',
-            'email' => 'johndoe@gmail.com',
-        ]);
-        $responseEncoded->assertJsonMissing([
-            'id' => 1,
-            'role_id' => '3',
-        ]);
+        $content = json_decode($responseEncoded->getContent(), true);
+
+        $this->assertEquals($data['name'], $content['data']['name']);
+        $this->assertEquals($data['email'], $content['data']['email']);
+        $this->assertNotEquals($data['id'], $content['data']['id']);
+        $this->assertNotEquals($data['role_id'], $content['data']['role_id']);
     }
 }

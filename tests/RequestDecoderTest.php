@@ -22,17 +22,16 @@ class RequestDecoderTest extends TestCase
     }
 
     /**
+     * @param $request
      * @param $uri
      * @param $method
      * @param array $parameters
-     * @param array $headers
+     * @return $request
      */
-    protected function simulateRequest($uri, $method, array $parameters = [], array $headers = [])
+    protected function simulateRequest($request, $uri, $method, array $parameters = [])
     {
-        $request = Request::create('', $method);
-        $request->headers->replace($headers);
         $request->setRouteResolver(function () use ($request, $uri, $method, $parameters) {
-            return (new Route($method, $uri, []))->bind($request);
+            return (new Route($method, $uri, $parameters))->bind($request);
         });
         
         return $request;
@@ -41,29 +40,29 @@ class RequestDecoderTest extends TestCase
     /**
      * @test
      */
-    public function it_decode_headers_from_requests()
+    public function it_decode_headers_from_request()
     {
         $consumerId = 341;
-
-        $request = $this->simulateRequest('users', 'GET', [], [
+        $request = new Request([], [], [], [], [], ['REQUEST_URI' => 'users']);
+        $request->headers->replace([
             'Consumer-ID' => $this->encode($consumerId)
         ]);
+        $this->simulateRequest($request, 'GET', 'users');
 
         $requestDecoded = $this->decoder->handle($request);
 
-        $this->assertNotEquals($request->headers()->all(), $requestDecoded->headers()->all());
-        $this->assertEquals($consumerId, $requestDecoded->headers()->get('Consumer-ID'));
+        $this->assertNotEquals($request->headers->all(), $requestDecoded->headers->all());
+        $this->assertEquals($consumerId, $requestDecoded->headers->get('Consumer-ID'));
     }
 
     /**
      * @test
      */
-    public function it_decode_route_parameters_from_requests()
+    public function it_decode_route_parameters_from_request()
     {
         $userId = 341;
-        $request = $this->simulateRequest('users/{{user}}', 'GET', [
-            'user' => $this->encode($userId)
-        ]);
+        $request = new Request([], [], [], [], [], ['REQUEST_URI' => 'users/'.$userId]);
+        $this->simulateRequest($request, 'GET', 'users/{user}');
 
         $requestDecoded = $this->decoder->handle($request);
 
