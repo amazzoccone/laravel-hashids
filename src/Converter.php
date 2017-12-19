@@ -28,10 +28,10 @@ class Converter
     {
         $salt = $config['salt'];
         $minLength = $config['length'];
-        $keyName = $config['keyName'];
+        $keys = $config['keys'];
 
         $this->hashids = new Hashids($salt, $minLength);
-        $this->checker = new Checker($keyName);
+        $this->checker = new Checker($keys);
     }
 
     /**
@@ -67,7 +67,6 @@ class Converter
      * @param bool $onlyIds
      * @return array
      */
-
     protected function mapValues(array $attributes, Closure $closure, $onlyIds)
     {
         $collection = collect($attributes);

@@ -4,5 +4,11 @@ return [
     'salt' => env('HASHIDS_SALT', 'Bondacom'),
     'length' => 12,
 
-    'keyName' => 'id'
+    /*
+     * Configuration to check if parameters should be decode/encode
+     * */
+    'keys' => [
+        'whitelist' => ['id'],
+        'blacklist' => []
+    ]
 ];

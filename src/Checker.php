@@ -5,18 +5,47 @@ namespace Bondacom\LaravelHashids;
 class Checker
 {
     /**
-     * @var string
+     * @var array
      */
-    private $keyName;
+    private $separators;
+
+    /**
+     * @var array
+     */
+    private $blacklist;
+
+    /**
+     * @var array
+     */
+    private $whitelist;
 
     /**
      * Checker constructor.
-     * @param string $keyName
+     * @param array $keys
      */
-    public function __construct(string $keyName = null)
+    public function __construct(array $keys)
     {
-        //TODO: Add posibility to have a blacklist
-        $this->keyName = $keyName ?: 'id';
+        $this->separators = ['_', '-', '']; //before key name
+        $this->whitelist = $this->getCombinations($keys['whitelist'] ?? ['id']);
+        $this->blacklist = $this->getCombinations($keys['blacklist'] ?? []);
+    }
+
+    /**
+     * @param string $field
+     * @return bool
+     */
+    public function isInBlacklist($field)
+    {
+        return in_array($field, $this->blacklist);
+    }
+
+    /**
+     * @param string $field
+     * @return boolean
+     */
+    public function isInWhitelist($field)
+    {
+        return in_array($field, $this->whitelist);
     }
 
     /**
@@ -25,14 +54,7 @@ class Checker
      */
     public function isAnId($field)
     {
-        if ($field === $this->keyName) {
-            return true;
-        }
-
-        $acceptedEndingIds = ['_'.$this->keyName, '-'.$this->keyName];
-        $length = strlen($this->keyName) + 1;
-
-        return in_array(substr($field, -$length), $acceptedEndingIds);
+        return in_array($field, $this->whitelist);
     }
 
     /**
@@ -50,6 +72,21 @@ class Checker
         if (property_exists(self::class, $key)) {
             return $this->{$key};
         }
+    }
+
+    /**
+     * @param array $items
+     * @return array
+     */
+    private function getCombinations(array $items)
+    {
+        $combinations = [];
+        foreach ($items as $item) {
+            foreach ($this->separators as $separator) {
+                array_push($combinations, $separator.$item);
+            }
+        }
+        return $combinations;
     }
 
 }
