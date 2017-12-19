@@ -34,6 +34,8 @@ class RequestDecoderTest extends TestCase
         $request->setRouteResolver(function () use ($request, $uri, $method, $parameters) {
             return (new Route($method, $uri, []))->bind($request);
         });
+        
+        return $request;
     }
 
     /**
