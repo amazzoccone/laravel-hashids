@@ -34,7 +34,7 @@ class RequestDecoder
     public function handle(Request $request)
     {
         $this->converter = app(Converter::class);
-        $this->request = $request;
+        $this->request = clone $request;
 
         $this->decodeHeader()
             ->decodeRouteParameters()

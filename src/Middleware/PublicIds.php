@@ -2,7 +2,6 @@
 
 namespace Bondacom\LaravelHashids\Middleware;
 
-use Bondacom\LaravelHashids\Converter;
 use Bondacom\LaravelHashids\RequestDecoder;
 use Bondacom\LaravelHashids\ResponseEncoder;
 use Closure;

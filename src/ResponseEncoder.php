@@ -15,17 +15,23 @@ class ResponseEncoder
     private $converter;
 
     /**
+     * @var \Illuminate\Http\Response
+     */
+    private $response;
+
+    /**
      * @param $response
      * @return mixed
      */
     public function handle($response)
     {
         $this->converter = app(Converter::class);
+        $this->response = clone $response;
 
-        $content = json_decode($response->getContent(), true);
+        $content = json_decode($this->response->getContent(), true);
         $encodedContent = json_encode($this->converter->encode($content));
-        $response->setContent($encodedContent);
+        $this->response->setContent($encodedContent);
 
-        return $response;
+        return $this->response;
     }
 }
