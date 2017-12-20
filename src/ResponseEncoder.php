@@ -32,9 +32,8 @@ class ResponseEncoder extends Converter
         $this->hashids = app(Hashids::class);
 
         $content = json_decode($this->response->getContent(), true);
-        //IMPROVE: Maybe could be especify structure of api content to be encoded. Ex.: "data"
-        $encodedContent = json_encode($this->encode($content));
-        $this->response->setContent($encodedContent);
+        //IMPROVE: Maybe could be especify structure of api content to be encoded. Ex.: "data";
+        $this->response->setContent($this->encode($content));
 
         return $this->response;
     }
@@ -43,7 +42,7 @@ class ResponseEncoder extends Converter
      * Encode system ids to hash ids
      *
      * @param array $attributes
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function encode(array $attributes)
     {

@@ -52,7 +52,7 @@ class RequestDecoder extends Converter
         $params = array_map('current', $this->request->headers->all());
         $newHeaders = $this->decode($params, $this->config('headers'));
 
-        $this->request->headers->replace($newHeaders);
+        $this->request->headers->replace($newHeaders->toArray());
 
         return $this;
     }
@@ -65,9 +65,9 @@ class RequestDecoder extends Converter
         $params = $this->request->route()->parameters();
         $newRouteParams = $this->decode($params, $this->config('route_parameters'));
 
-        foreach ($newRouteParams as $key => $value) {
+        $newRouteParams->each(function ($value, $key) {
             $this->request->route()->setParameter($key, $value);
-        }
+        });
 
         return $this;
     }
@@ -79,7 +79,7 @@ class RequestDecoder extends Converter
     {
         $params = $this->request->all();
         $newQueryParams = $this->decode($params, $this->config('query_parameters'));
-        $this->request->replace($newQueryParams);
+        $this->request->replace($newQueryParams->toArray());
 
         return $this;
     }
@@ -89,7 +89,7 @@ class RequestDecoder extends Converter
      *
      * @param array $parameters
      * @param array $config
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     private function decode(array $parameters, array $config)
     {

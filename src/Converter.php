@@ -45,7 +45,7 @@ abstract class Converter
      * @param array $config
      * @param Closure $closure
      * @param bool|false $withoutValidation
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     protected function mapValues(array $attributes, array $config, Closure $closure, $withoutValidation = false)
     {
@@ -69,7 +69,7 @@ abstract class Converter
             } catch (Exception $e) {
                 throw new ConverterException();
             }
-        })->toArray();
+        });
     }
 
     /**
