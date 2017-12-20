@@ -25,7 +25,7 @@ return [
         /*
         * Request header
         * */
-        'header' => [
+        'headers' => [
             'whitelist' => ['id'],
             'blacklist' => []
         ],
