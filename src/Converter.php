@@ -24,9 +24,10 @@ abstract class Converter
     private $checker;
 
     /**
+     * @param $mixed
      * @return mixed
      */
-    abstract protected function handle();
+    abstract public function handle($mixed);
 
     /**
      * Converter constructor.
