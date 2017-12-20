@@ -51,7 +51,7 @@ abstract class Converter
         $this->checker = new Checker($config);
 
         $collection = collect($attributes);
-        return $collection->map(function ($value, $key) use ($closure, $withoutValidation, $attributes) {
+        return $collection->map(function ($value, $key) use ($closure, $withoutValidation, $attributes, $config) {
             try {
                 $valid = $withoutValidation ?: $this->checker->isAnId($key);
 
@@ -60,7 +60,7 @@ abstract class Converter
                 }
 
                 if (is_array($value)) {
-                    return $this->mapValues($value, $closure, false);
+                    return $this->mapValues($value, $config, $closure, false);
                 }
 
                 return $closure($value);

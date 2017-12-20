@@ -16,9 +16,14 @@ return [
         'separators' => ['_', '-']
     ],
 
+    /**
+     * Custom configuration to override default configs
+     * If whitelist key is true, it will convert all values (except specifies in blacklist)
+     * If whitelist key is false, it will skip and not convert anything
+     */
     'customizations' => [
         /*
-        * Custom configuration for request header (override default config)
+        * Request header
         * */
         'header' => [
             'whitelist' => ['id'],
@@ -26,15 +31,15 @@ return [
         ],
 
         /*
-         * Custom configuration for request route parameters (override default config)
+         * Request route parameters
          * */
         'route_parameters' => [
-            'whitelist' => ['id'],
-            'blacklist' => []
+            'whitelist' => true,
+            'blacklist' => ['session']
         ],
 
         /*
-         * Custom configuration for request query parameters (override default config)
+         * Request query parameters
          * */
         'query_parameters' => [
             'whitelist' => ['id'],

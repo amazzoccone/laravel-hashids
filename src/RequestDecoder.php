@@ -63,7 +63,7 @@ class RequestDecoder extends Converter
     protected function decodeRouteParameters()
     {
         $params = $this->request->route()->parameters();
-        $newRouteParams = $this->decode($params, $this->config('query_parameters'));
+        $newRouteParams = $this->decode($params, $this->config('route_parameters'));
 
         foreach ($newRouteParams as $key => $value) {
             $this->request->route()->setParameter($key, $value);
@@ -95,6 +95,6 @@ class RequestDecoder extends Converter
     {
         return $this->mapValues($parameters, $config, function ($value) {
             return $this->hashids->decode($value)[0];
-        }, true);
+        });
     }
 }

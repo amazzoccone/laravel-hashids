@@ -17,18 +17,18 @@ class Checker
     private $blacklist;
 
     /**
-     * @var \Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection|boolean
      */
     private $whitelist;
 
     /**
      * Checker constructor.
-     * @param array $config
+     * @param $config
      */
-    public function __construct(array $config)
+    public function __construct($config)
     {
-        $this->separators = $config['separators']; //before key name
-        $this->whitelist = $this->getCombinations($config['whitelist']);
+        $this->separators = $config['separators'] ?? [];  //before key name
+        $this->whitelist = is_array($config['whitelist']) ? $this->getCombinations($config['whitelist']) : $config['whitelist'];
         $this->blacklist = $this->getCombinations($config['blacklist']);
     }
 
@@ -47,6 +47,10 @@ class Checker
      */
     public function isInWhitelist($field)
     {
+        if (is_bool($this->whitelist)) {
+            return $this->whitelist;
+        }
+
         return $this->isInList($this->whitelist, $field);
     }
 
@@ -56,7 +60,7 @@ class Checker
      */
     public function isAnId($field)
     {
-        return $this->isInWhitelist($field) && !$this->isInWhitelist();
+        return $this->isInWhitelist($field) && !$this->isInBlacklist($field);
     }
 
     /**
