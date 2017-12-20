@@ -26,7 +26,7 @@ class ResponseEncoder extends Converter
      * @param \Illuminate\Http\Response $response
      * @return \Illuminate\Http\Response
      */
-    public function handle(Response $response)
+    public function handle($response)
     {
         $this->response = clone $response;
         $this->hashids = app(Hashids::class);

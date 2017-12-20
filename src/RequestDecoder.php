@@ -32,7 +32,7 @@ class RequestDecoder extends Converter
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Request
      */
-    public function handle(Request $request)
+    public function handle($request)
     {
         $this->request = clone $request;
         $this->hashids = app(Hashids::class);
