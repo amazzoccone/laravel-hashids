@@ -7,86 +7,81 @@ use Closure;
 use Exception;
 use Hashids\Hashids;
 
-class Converter
+abstract class Converter
 {
     /**
-     * @var \Hashids\Hashids
+     * @var array
      */
-    private $hashids;
+    private $defaultConfig;
+    /**
+     * @var array
+     */
+    private $customsConfig;
 
     /**
-     * @var Checker
+     * @var \Bondacom\LaravelHashids\Checker
      */
     private $checker;
 
     /**
-     * PublicIdsConverter constructor.
-     *
+     * @param $mixed
+     * @return mixed
+     */
+    abstract public function handle($mixed);
+
+    /**
+     * Converter constructor.
+     * @param array $defaultConfig
+     * @param array $customsConfig
+     */
+    public function __construct(array $defaultConfig, array $customsConfig = [])
+    {
+        $this->defaultConfig = $defaultConfig;
+        $this->customsConfig = $customsConfig;
+    }
+
+    /**
+     * @param array $attributes
      * @param array $config
-     */
-    public function __construct($config)
-    {
-        $salt = $config['salt'];
-        $minLength = $config['length'];
-        $keyName = $config['keyName'];
-
-        $this->hashids = new Hashids($salt, $minLength);
-        $this->checker = new Checker($keyName);
-    }
-
-    /**
-     * Decode hash ids to system ids
-     *
-     * @param array $attributes
-     * @param bool $onlyIds
-     * @return array
-     */
-    public function decode(array $attributes, $onlyIds = true)
-    {
-        return $this->mapValues($attributes, function ($value) {
-            return $this->hashids->decode($value)[0];
-        }, $onlyIds);
-    }
-
-    /**
-     * Encode system ids to hash ids
-     *
-     * @param array $attributes
-     * @return array
-     */
-    public function encode(array $attributes)
-    {
-        return $this->mapValues($attributes, function ($value) {
-            return $this->hashids->encode($value);
-        }, true);
-    }
-
-    /**
-     * @param array $attributes
      * @param Closure $closure
-     * @param bool $onlyIds
-     * @return array
+     * @param bool|false $withoutValidation
+     * @return \Illuminate\Support\Collection
      */
-
-    protected function mapValues(array $attributes, Closure $closure, $onlyIds)
+    protected function mapValues(array $attributes, array $config, Closure $closure, $withoutValidation = false)
     {
-        $collection = collect($attributes);
+        $this->checker = new Checker($config);
 
-        return $collection->map(function ($value, $key) use ($closure, $onlyIds, $attributes) {
+        $collection = collect($attributes);
+        return $collection->map(function ($value, $key) use ($closure, $withoutValidation, $attributes, $config) {
             try {
+                $valid = $withoutValidation ?: $this->checker->isAnId($key);
+
                 if (is_array($value)) {
-                    if($this->checker->isAnId($key)) {
-                        $onlyIds = false;
-                    }
-                    return $this->mapValues($value, $closure, $onlyIds);
+                    return $this->mapValues($value, $config, $closure, $valid); //Ex.: users_id=[13,92,7] or orders=[..]
                 }
-                if ((!$onlyIds || $this->checker->isAnId($key)) && !is_null($value)) {
-                    return $closure($value);
+
+                if (empty($value) || !$valid) {
+                    return $value;
                 }
-                return $value;
+
+                return $closure($value);
+
             } catch (Exception $e) {
                 throw new ConverterException();
             }
-        })->toArray();
+        });
+    }
+
+    /**
+     * @param string $field
+     * @return array
+     */
+    protected function config(string $field = null)
+    {
+        if (is_null($field)) {
+            return $this->defaultConfig;
+        }
+
+        return array_merge($this->defaultConfig, $this->customsConfig[$field]);
     }
 }

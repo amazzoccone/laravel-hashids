@@ -2,21 +2,56 @@
 
 namespace Bondacom\LaravelHashids;
 
+use Illuminate\Support\Collection;
+
 class Checker
 {
     /**
-     * @var string
+     * @var array
      */
-    private $keyName;
+    private $separators;
+
+    /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $blacklist;
+
+    /**
+     * @var \Illuminate\Support\Collection|boolean
+     */
+    private $whitelist;
 
     /**
      * Checker constructor.
-     * @param string $keyName
+     * @param $config
      */
-    public function __construct(string $keyName = null)
+    public function __construct($config)
     {
-        //TODO: Add posibility to have a blacklist
-        $this->keyName = $keyName ?: 'id';
+        $this->separators = $config['separators'] ?? [];  //before key name
+        $this->blacklist = collect($config['blacklist']);
+        $this->whitelist = is_bool($config['whitelist']) ? $config['whitelist'] : collect($config['whitelist']);
+    }
+
+    /**
+     * @param string $field
+     * @return bool
+     */
+    public function isInBlacklist($field)
+    {
+        return $this->isInList($this->blacklist, $field);
+    }
+
+    /**
+     * @param string $field
+     * @return boolean
+     */
+    public function isInWhitelist($field)
+    {
+        if (is_bool($this->whitelist)) {
+            return $this->whitelist;
+        }
+
+        return $this->isInList($this->whitelist, $field);
     }
 
     /**
@@ -25,14 +60,7 @@ class Checker
      */
     public function isAnId($field)
     {
-        if ($field === $this->keyName) {
-            return true;
-        }
-
-        $acceptedEndingIds = ['_'.$this->keyName, '-'.$this->keyName];
-        $length = strlen($this->keyName) + 1;
-
-        return in_array(substr($field, -$length), $acceptedEndingIds);
+        return $this->isInWhitelist($field) && !$this->isInBlacklist($field);
     }
 
     /**
@@ -52,4 +80,31 @@ class Checker
         }
     }
 
+    /**
+     * @param \Illuminate\Support\Collection $list
+     * @param string $field
+     * @return \Illuminate\Support\Collection
+     */
+    private function isInList(Collection $list, $field)
+    {
+        return $list->containsStrict($field) or $this->getCombinations($list)->contains(function ($value) use ($field) {
+            return ends_with($field, $value);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection $items
+     * @return \Illuminate\Support\Collection
+     */
+    private function getCombinations(Collection $items)
+    {
+        $combinations = collect([]);
+
+        foreach ($items as $item) {
+            foreach ($this->separators as $separator) {
+                $combinations->push($separator.$item);
+            }
+        }
+        return $combinations;
+    }
 }

@@ -29,8 +29,13 @@ Copy the config file into your project by running
 ```
 php artisan vendor:publish --provider="Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider"
 ```
-Here you can change the key name.
-Important: Remember to set a salt!
+
+Here you are able to change the default parameters:
+- separators
+- whitelist
+- blacklist
+
+If you need more customization, you can set specific parameters to each part of request or response (query parameters, route parameters and headers)
 
 ### Usage
 

@@ -16,7 +16,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        $this->hashids = new Hashids(config('hashids')['salt'], config('hashids')['length']);
+        $this->hashids = app(Hashids::class);
     }
 
     /**

@@ -72,4 +72,24 @@ class RequestDecoderTest extends TestCase
         $this->assertNotEquals($request->route()->parameters(), $requestDecoded->route()->parameters());
         $this->assertEquals($userId, $requestDecoded->route()->parameter('user'));*/
     }
+
+    /**
+     * @test
+     */
+    public function it_decode_hash_ids()
+    {
+        $this->markTestIncomplete('Cannot simulate request for testing purpose.');
+        /*$systemData = [
+            'id' => 1,
+            'name' => 'John',
+            'email' => 'johndoe@gmail.com',
+            'role_id' => 3,
+            'provider_id' => null
+        ];
+        $encodedData = $this->converter->encode($systemData);
+
+        $decodedData = $this->converter->decode($encodedData);
+
+        $this->assertEquals($systemData, $decodedData);*/
+    }
 }
