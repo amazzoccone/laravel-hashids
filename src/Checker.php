@@ -28,8 +28,8 @@ class Checker
     public function __construct($config)
     {
         $this->separators = $config['separators'] ?? [];  //before key name
-        $this->whitelist = is_array($config['whitelist']) ? $this->getCombinations($config['whitelist']) : $config['whitelist'];
-        $this->blacklist = $this->getCombinations($config['blacklist']);
+        $this->blacklist = collect($config['blacklist']);
+        $this->whitelist = is_bool($config['whitelist']) ? $config['whitelist'] : collect($config['whitelist']);
     }
 
     /**
@@ -81,10 +81,26 @@ class Checker
     }
 
     /**
-     * @param array $items
+     * @param \Illuminate\Support\Collection $list
+     * @param string $field
      * @return \Illuminate\Support\Collection
      */
-    private function getCombinations(array $items)
+    private function isInList(Collection $list, $field)
+    {
+        if ($list->contains($field)) {
+            return true;
+        }
+
+        return $this->getCombinations($list)->contains(function ($value) use ($field) {
+            return ends_with($field, $value);
+        });
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection $items
+     * @return \Illuminate\Support\Collection
+     */
+    private function getCombinations(Collection $items)
     {
         $combinations = collect([]);
         foreach ($items as $item) {
@@ -93,17 +109,5 @@ class Checker
             }
         }
         return $combinations;
-    }
-
-    /**
-     * @param \Illuminate\Support\Collection $list
-     * @param string $field
-     * @return \Illuminate\Support\Collection
-     */
-    private function isInList(Collection $list, $field)
-    {
-        return $list->contains(function ($value) use ($field) {
-            return $field == $value || ends_with($field, $value);
-        });
     }
 }

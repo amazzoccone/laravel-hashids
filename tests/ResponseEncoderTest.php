@@ -53,7 +53,13 @@ class ResponseEncoderTest extends TestCase
             'id' => 1,
             'name' => 'John',
             'email' => 'johndoe@gmail.com',
-            'role_id' => '3',
+            'role_id' => 3,
+            'provider_id' => null,
+            'orders' => [
+                'id' => 11,
+                'cupon_id' => 2,
+                'description' => 'Testing'
+            ]
         ];
         $response = response(compact('data'), 200);
 
@@ -62,7 +68,60 @@ class ResponseEncoderTest extends TestCase
 
         $this->assertEquals($data['name'], $content['data']['name']);
         $this->assertEquals($data['email'], $content['data']['email']);
+        $this->assertEquals($data['provider_id'], $content['data']['provider_id']);
         $this->assertNotEquals($data['id'], $content['data']['id']);
         $this->assertNotEquals($data['role_id'], $content['data']['role_id']);
+        $this->assertNotEquals($data['orders']['id'], $content['orders']['cupon_id']);
+        $this->assertEquals($data['orders']['description'], $content['orders']['description']);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_encode_arrays_without_ids()
+    {
+        $data = [
+            'data' => [
+                'First data',
+                'Second data',
+            ],
+            'meta' => [
+                'First meta'
+            ]
+        ];
+
+        $response = response($data, 200);
+
+        $responseEncoded = $this->encoder->handle($response);
+        $content = json_decode($responseEncoded->getContent(), true);
+
+        $this->assertEquals($data, $content);
+    }
+
+    /**
+     * @test
+     */
+    public function it_encode_arrays_with_ids()
+    {
+        $data = [
+            'data' => [
+                'genders_id' => [
+                    '1',
+                    '2',
+                ],
+            ],
+            'meta' => [
+                'First meta'
+            ]
+        ];
+
+        $response = response($data, 200);
+
+        $responseEncoded = $this->encoder->handle($response);
+        $content = json_decode($responseEncoded->getContent(), true);
+
+        $this->assertEquals($data['meta'], $content['meta']);
+        $this->assertNotEquals($data['data']['genders_id'], $content['data']['genders_id']);
+        $this->assertTrue(is_array($content['data']['genders_id']));
     }
 }

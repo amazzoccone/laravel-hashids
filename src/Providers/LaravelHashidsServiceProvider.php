@@ -24,6 +24,10 @@ class LaravelHashidsServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../config/hashids.php', 'hashids'
+        );
+
         $config = config('hashids');
 
         $this->app->bind(RequestDecoder::class, function ($app) use ($config) {
@@ -34,7 +38,11 @@ class LaravelHashidsServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(Hashids::class, function ($app) use ($config) {
-            return new Hashids($config['system']);
+            $salt = $config['system']['salt'];
+            $length = $config['system']['length'];
+            $alphabet = $config['system']['alphabet'];
+
+            return new Hashids($salt, $length, $alphabet);
         });
     }
 }

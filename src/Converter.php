@@ -34,7 +34,7 @@ abstract class Converter
      * @param array $defaultConfig
      * @param array $customsConfig
      */
-    public function __construct(array $defaultConfig, array $customsConfig)
+    public function __construct(array $defaultConfig, array $customsConfig = [])
     {
         $this->defaultConfig = $defaultConfig;
         $this->customsConfig = $customsConfig;

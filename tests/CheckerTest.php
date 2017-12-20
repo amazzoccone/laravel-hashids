@@ -119,7 +119,7 @@ class CheckerTest extends TestCase
     /**
      * @test
      */
-    public function it_returns_whitelist_combinations()
+    public function it_returns_whitelist_collection()
     {
         $config = [
             'separators' => ['_', '-'],
@@ -129,13 +129,13 @@ class CheckerTest extends TestCase
 
         $checker = new Checker($config);
 
-        $this->assertEquals(['id', '_id', '-id'], $checker->whitelist);
+        $this->assertEquals(collect(['id']), $checker->whitelist);
     }
 
     /**
      * @test
      */
-    public function it_returns_blacklist_combinations()
+    public function it_returns_blacklist_collection()
     {
         $config = [
             'separators' => ['_', '-'],
@@ -145,6 +145,6 @@ class CheckerTest extends TestCase
 
         $checker = new Checker($config);
 
-        $this->assertEquals(['user', '_user', '-user'], $checker->blacklist);
+        $this->assertEquals(collect(['user']), $checker->blacklist);
     }
 }
