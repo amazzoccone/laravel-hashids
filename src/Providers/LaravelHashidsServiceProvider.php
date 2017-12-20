@@ -2,7 +2,9 @@
 
 namespace Bondacom\LaravelHashids\Providers;
 
-use Bondacom\LaravelHashids\Converter;
+use Bondacom\LaravelHashids\RequestDecoder;
+use Bondacom\LaravelHashids\ResponseEncoder;
+use Hashids\Hashids;
 use Illuminate\Support\ServiceProvider;
 
 class LaravelHashidsServiceProvider extends ServiceProvider
@@ -23,8 +25,16 @@ class LaravelHashidsServiceProvider extends ServiceProvider
     public function register()
     {
         $config = config('hashids');
-        $this->app->bind(Converter::class, function ($app) use ($config) {
-            return new Converter($config);
+
+        $this->app->bind(RequestDecoder::class, function ($app) use ($config) {
+            return new RequestDecoder($config['default'], $config['customizations']);
+        });
+        $this->app->bind(ResponseEncoder::class, function ($app) use ($config) {
+            return new ResponseEncoder($config['default']);
+        });
+
+        $this->app->bind(Hashids::class, function ($app) use ($config) {
+            return new Hashids($config['system']);
         });
     }
 }
