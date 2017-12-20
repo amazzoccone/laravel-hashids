@@ -18,5 +18,12 @@
         "psr-4": {
             "Bondacom\\LaravelHashids\\Tests\\": "tests/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bondacom\\LaravelHashids\\Providers\\LaravelHashidsServiceProvider"
+            ]
+        }
     }
 }
