@@ -87,13 +87,7 @@ class Checker
      */
     private function isInList(Collection $list, $field)
     {
-        if ($list->contains(function ($value) use ($field) {
-            return $field === $value;
-        })) {
-            return true;
-        }
-
-        return $this->getCombinations($list)->contains(function ($value) use ($field) {
+        return $list->containsStrict($field) or $this->getCombinations($list)->contains(function ($value) use ($field) {
             return ends_with($field, $value);
         });
     }
@@ -105,6 +99,7 @@ class Checker
     private function getCombinations(Collection $items)
     {
         $combinations = collect([]);
+
         foreach ($items as $item) {
             foreach ($this->separators as $separator) {
                 $combinations->push($separator.$item);
