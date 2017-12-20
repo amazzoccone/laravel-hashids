@@ -28,6 +28,11 @@ class ResponseEncoderTest extends TestCase
             'name' => 'John',
             'email' => 'johndoe@gmail.com',
             'role_id' => '3',
+            'orders' => [
+                'id' => 321,
+                'description' => 'Testing',
+                'type' => 'multiple',
+            ]
         ];
         $response = response(compact('data'), 200);
 
@@ -40,7 +45,13 @@ class ResponseEncoderTest extends TestCase
             'id',
             'name',
             'email',
-            'role_id'
+            'role_id',
+            'orders'
+        ]);
+        $this->assertEquals(array_keys($content['data']['orders']), [
+            'id',
+            'description',
+            'type'
         ]);
     }
 
