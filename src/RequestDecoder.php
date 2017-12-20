@@ -2,6 +2,7 @@
 
 namespace Bondacom\LaravelHashids;
 
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 
 /**
@@ -15,7 +16,7 @@ use Illuminate\Http\Request;
  *   - IDs header:
  *     Ex: Consumer-ID,
  */
-class RequestDecoder
+class RequestDecoder extends Converter
 {
     /**
      * @var \Illuminate\Http\Request
@@ -23,9 +24,9 @@ class RequestDecoder
     private $request;
 
     /**
-     * @var \Bondacom\LaravelHashids\Converter
+     * @var \Hashids\Hashids;
      */
-    private $converter;
+    private $hashids;
 
     /**
      * @param  \Illuminate\Http\Request $request
@@ -33,10 +34,10 @@ class RequestDecoder
      */
     public function handle(Request $request)
     {
-        $this->converter = app(Converter::class);
         $this->request = clone $request;
+        $this->hashids = app(Hashids::class);
 
-        $this->decodeHeader()
+        $this->decodeHeaders()
             ->decodeRouteParameters()
             ->decodeQueryParameters();
 
@@ -46,12 +47,12 @@ class RequestDecoder
     /**
      * @return $this
      */
-    protected function decodeHeader()
+    protected function decodeHeaders()
     {
-        $headers = array_map('current', $this->request->headers->all());
-        $headersDecoded = $this->converter->decode($headers);
+        $params = array_map('current', $this->request->headers->all());
+        $newHeaders = $this->decode($params, $this->config('headers'));
 
-        $this->request->headers->replace($headersDecoded);
+        $this->request->headers->replace($newHeaders);
 
         return $this;
     }
@@ -61,11 +62,10 @@ class RequestDecoder
      */
     protected function decodeRouteParameters()
     {
-        $parameters = $this->request->route()->parameters();
-        //IMPORTANT: Pass onlyids as false. Must decode all route parameters!
-        $parametersDecoded = $this->converter->decode($parameters, false);
+        $params = $this->request->route()->parameters();
+        $newRouteParams = $this->decode($params, $this->config('query_parameters'));
 
-        foreach ($parametersDecoded as $key => $value) {
+        foreach ($newRouteParams as $key => $value) {
             $this->request->route()->setParameter($key, $value);
         }
 
@@ -77,10 +77,24 @@ class RequestDecoder
      */
     protected function decodeQueryParameters()
     {
-        $parameters = $this->request->all();
-
-        $this->request->replace($this->converter->decode($parameters));
+        $params = $this->request->all();
+        $newQueryParams = $this->decode($params, $this->config('query_parameters'));
+        $this->request->replace($newQueryParams);
 
         return $this;
+    }
+
+    /**
+     * Decode hash ids to system ids
+     *
+     * @param array $parameters
+     * @param array $config
+     * @return array
+     */
+    private function decode(array $parameters, array $config)
+    {
+        return $this->mapValues($parameters, $config, function ($value) {
+            return $this->hashids->decode($value)[0];
+        }, true);
     }
 }
