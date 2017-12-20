@@ -16,7 +16,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Bondacom\\Tests\\": "tests/"
+            "Bondacom\\LaravelHashids\\Tests\\": "tests/"
         }
     }
 }
