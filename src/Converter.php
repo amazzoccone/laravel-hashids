@@ -54,11 +54,11 @@ abstract class Converter
         $collection = collect($attributes);
         return $collection->map(function ($value, $key) use ($closure, $withoutValidation, $attributes, $config) {
             try {
-                if (is_array($value)) {
-                    return $this->mapValues($value, $config, $closure, is_int($key));   //is_int for not assoc arrays. Ex.: user_ids=[142,211,84]
-                }
-
                 $valid = $withoutValidation ?: $this->checker->isAnId($key);
+
+                if (is_array($value)) {
+                    return $this->mapValues($value, $config, $closure, $valid); //Ex.: users_id=[13,92,7] or orders=[..]
+                }
 
                 if (empty($value) || !$valid) {
                     return $value;
