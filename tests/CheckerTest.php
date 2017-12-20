@@ -1,9 +1,8 @@
 <?php
 
-namespace Bondacom\Tests;
+namespace Bondacom\LaravelHashids\Tests;
 
 use Bondacom\LaravelHashids\Checker;
-use Carbon\Carbon;
 
 class CheckerTest extends TestCase
 {

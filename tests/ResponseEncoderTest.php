@@ -1,6 +1,6 @@
 <?php
 
-namespace Bondacom\Tests;
+namespace Bondacom\LaravelHashids\Tests;
 
 use Bondacom\LaravelHashids\ResponseEncoder;
 
