@@ -87,7 +87,9 @@ class Checker
      */
     private function isInList(Collection $list, $field)
     {
-        if ($list->contains($field)) {
+        if ($list->contains(function ($value) use ($field) {
+            return $field === $value;
+        })) {
             return true;
         }
 

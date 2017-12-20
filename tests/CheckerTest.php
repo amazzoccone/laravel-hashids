@@ -24,6 +24,7 @@ class CheckerTest extends TestCase
         $this->assertTrue($checker->isAnId('Consumer-id'));
         $this->assertFalse($checker->isAnId('id_role'));
         $this->assertFalse($checker->isAnId('provider'));
+        $this->assertFalse($checker->isAnId(1));
     }
 
     /**

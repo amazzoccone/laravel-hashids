@@ -82,8 +82,9 @@ class ResponseEncoderTest extends TestCase
         $this->assertEquals($data['provider_id'], $content['data']['provider_id']);
         $this->assertNotEquals($data['id'], $content['data']['id']);
         $this->assertNotEquals($data['role_id'], $content['data']['role_id']);
-        $this->assertNotEquals($data['orders']['id'], $content['orders']['cupon_id']);
-        $this->assertEquals($data['orders']['description'], $content['orders']['description']);
+        $this->assertNotEquals($data['orders']['id'], $content['data']['orders']['id']);
+        $this->assertNotEquals($data['orders']['cupon_id'], $content['data']['orders']['cupon_id']);
+        $this->assertEquals($data['orders']['description'], $content['data']['orders']['description']);
     }
 
     /**
