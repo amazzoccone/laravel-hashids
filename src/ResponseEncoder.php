@@ -24,8 +24,8 @@ class ResponseEncoder extends Converter
     {
         $this->response = $response;
 
-        $this->decodeHeaders()
-            ->decodeContent();
+        $this->encodeHeaders()
+            ->encodeContent();
 
         return $this->response;
     }
@@ -33,7 +33,7 @@ class ResponseEncoder extends Converter
     /**
      * @return $this
      */
-    protected function decodeHeaders()
+    protected function encodeHeaders()
     {
         $headers = $this->response->headers->all();
         $newHeaders = $this->encode($headers, 'headers')->toArray();
@@ -45,7 +45,7 @@ class ResponseEncoder extends Converter
     /**
      * @return $this
      */
-    protected function decodeContent()
+    protected function encodeContent()
     {
         $content = json_decode($this->response->getContent(), true);
         $newContent = $this->encode($content, 'content')->toArray();
