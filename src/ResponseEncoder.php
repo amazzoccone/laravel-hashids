@@ -2,7 +2,6 @@
 
 namespace Bondacom\LaravelHashids;
 
-use Hashids\Hashids;
 use Illuminate\Http\Response;
 
 /**
@@ -18,36 +17,40 @@ class ResponseEncoder extends Converter
     private $response;
 
     /**
-     * @var \Hashids\Hashids
-     */
-    private $hashids;
-
-    /**
      * @param \Illuminate\Http\Response $response
      * @return \Illuminate\Http\Response
      */
     public function handle($response)
     {
-        $this->response = clone $response;
-        $this->hashids = app(Hashids::class);
+        $this->response = $response;
 
-        $content = json_decode($this->response->getContent(), true);
-        //IMPROVE: Maybe could be especify structure of api content to be encoded. Ex.: "data";
-        $this->response->setContent($this->encode($content));
+        $this->encodeHeaders()
+            ->encodeContent();
 
         return $this->response;
     }
 
     /**
-     * Encode system ids to hash ids
-     *
-     * @param array $attributes
-     * @return \Illuminate\Support\Collection
+     * @return $this
      */
-    protected function encode(array $attributes)
+    protected function encodeHeaders()
     {
-        return $this->mapValues($attributes, $this->config(), function ($value) {
-            return $this->hashids->encode($value);
-        });
+        $headers = $this->response->headers->all();
+        $newHeaders = $this->encode($headers, 'headers')->toArray();
+        $this->response->headers->replace($newHeaders);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    protected function encodeContent()
+    {
+        $content = json_decode($this->response->getContent(), true);
+        $newContent = $this->encode($content, 'content')->toArray();
+        $this->response->setContent($newContent);
+
+        return $this;
     }
 }

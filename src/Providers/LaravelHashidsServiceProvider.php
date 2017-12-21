@@ -31,10 +31,10 @@ class LaravelHashidsServiceProvider extends ServiceProvider
         $config = config('hashids');
 
         $this->app->bind(RequestDecoder::class, function ($app) use ($config) {
-            return new RequestDecoder($config['default'], $config['customizations']);
+            return new RequestDecoder($config['default'], $config['customizations']['request']);
         });
         $this->app->bind(ResponseEncoder::class, function ($app) use ($config) {
-            return new ResponseEncoder($config['default']);
+            return new ResponseEncoder($config['default'], $config['customizations']['response']);
         });
 
         $this->app->bind(Hashids::class, function ($app) use ($config) {
