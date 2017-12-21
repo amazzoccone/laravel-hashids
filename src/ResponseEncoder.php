@@ -35,8 +35,9 @@ class ResponseEncoder extends Converter
      */
     protected function decodeHeaders()
     {
-        $headers = $this->response->headers;
-        $this->response->headers = $this->encode($headers, 'headers');
+        $headers = $this->response->headers->all();
+        $newHeaders = $this->encode($headers, 'headers')->toArray();
+        $this->response->headers->replace($newHeaders);
 
         return $this;
     }
@@ -47,7 +48,8 @@ class ResponseEncoder extends Converter
     protected function decodeContent()
     {
         $content = json_decode($this->response->getContent(), true);
-        $this->response->setContent($this->encode($content, 'content'));
+        $newContent = $this->encode($content, 'content')->toArray();
+        $this->response->setContent($newContent);
 
         return $this;
     }

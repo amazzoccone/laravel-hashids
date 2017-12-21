@@ -52,7 +52,7 @@ abstract class Converter
     {
         $checker = new Checker($config);
 
-        $this->mapValues($attributes, $checker, $closure);
+        return $this->mapValues($attributes, $checker, $closure);
     }
 
     /**
@@ -67,11 +67,11 @@ abstract class Converter
         $collection = collect($attributes);
         return $collection->map(function ($value, $key) use ($attributes, $checker, $closure, $withoutValidation) {
             try {
-                if(empty($value) || $this->checker->isInBlacklist($key)) {  //skip if is in blacklist
+                if(empty($value) || $checker->isInBlacklist($key)) {  //skip if is in blacklist
                     return $value;
                 }
 
-                $valid = $withoutValidation ?: $this->checker->isAnId($key);
+                $valid = $withoutValidation ?: $checker->isAnId($key);
                 if (is_array($value)) {
                     return $this->mapValues($value, $checker, $closure, $valid); //Ex.: users_id=[13,92,7] or orders=[..]
                 }
