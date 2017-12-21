@@ -48,7 +48,7 @@ class ResponseEncoder extends Converter
     protected function encodeContent()
     {
         $content = json_decode($this->response->getContent(), true);
-        $newContent = $this->encode($content, 'content')->toArray();
+        $newContent = $this->encode($content, 'content');
         $this->response->setContent($newContent);
 
         return $this;
