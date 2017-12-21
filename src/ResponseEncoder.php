@@ -31,11 +31,32 @@ class ResponseEncoder extends Converter
         $this->response = clone $response;
         $this->hashids = app(Hashids::class);
 
-        $content = json_decode($this->response->getContent(), true);
-        //IMPROVE: Maybe could be especify structure of api content to be encoded. Ex.: "data";
-        $this->response->setContent($this->encode($content));
+        $this->decodeHeaders()
+            ->decodeContent();
 
         return $this->response;
+    }
+
+    /**
+     * @return $this
+     */
+    private function decodeHeaders()
+    {
+        $headers = $this->response->headers;
+        $this->response->headers = $this->encode($headers);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    private function decodeContent()
+    {
+        $content = json_decode($this->response->getContent(), true);
+        $this->response->setContent($this->encode($content));
+
+        return $this;
     }
 
     /**
