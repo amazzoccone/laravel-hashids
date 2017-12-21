@@ -2,7 +2,6 @@
 
 namespace Bondacom\LaravelHashids;
 
-use Hashids\Hashids;
 use Illuminate\Http\Response;
 
 /**
@@ -18,18 +17,12 @@ class ResponseEncoder extends Converter
     private $response;
 
     /**
-     * @var \Hashids\Hashids
-     */
-    private $hashids;
-
-    /**
      * @param \Illuminate\Http\Response $response
      * @return \Illuminate\Http\Response
      */
     public function handle($response)
     {
         $this->response = clone $response;
-        $this->hashids = app(Hashids::class);
 
         $this->decodeHeaders()
             ->decodeContent();
@@ -40,10 +33,10 @@ class ResponseEncoder extends Converter
     /**
      * @return $this
      */
-    private function decodeHeaders()
+    protected function decodeHeaders()
     {
         $headers = $this->response->headers;
-        $this->response->headers = $this->encode($headers);
+        $this->response->headers = $this->encode($headers, 'headers');
 
         return $this;
     }
@@ -51,24 +44,11 @@ class ResponseEncoder extends Converter
     /**
      * @return $this
      */
-    private function decodeContent()
+    protected function decodeContent()
     {
         $content = json_decode($this->response->getContent(), true);
-        $this->response->setContent($this->encode($content));
+        $this->response->setContent($this->encode($content, 'content'));
 
         return $this;
-    }
-
-    /**
-     * Encode system ids to hash ids
-     *
-     * @param array $attributes
-     * @return \Illuminate\Support\Collection
-     */
-    protected function encode(array $attributes)
-    {
-        return $this->mapValues($attributes, $this->config(), function ($value) {
-            return $this->hashids->encode($value);
-        });
     }
 }

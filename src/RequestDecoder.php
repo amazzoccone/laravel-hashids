@@ -2,7 +2,6 @@
 
 namespace Bondacom\LaravelHashids;
 
-use Hashids\Hashids;
 use Illuminate\Http\Request;
 
 /**
@@ -24,18 +23,12 @@ class RequestDecoder extends Converter
     private $request;
 
     /**
-     * @var \Hashids\Hashids;
-     */
-    private $hashids;
-
-    /**
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Request
      */
     public function handle($request)
     {
         $this->request = clone $request;
-        $this->hashids = app(Hashids::class);
 
         $this->decodeHeaders()
             ->decodeRouteParameters()
@@ -50,7 +43,7 @@ class RequestDecoder extends Converter
     protected function decodeHeaders()
     {
         $params = array_map('current', $this->request->headers->all());
-        $newHeaders = $this->decode($params, $this->config('headers'));
+        $newHeaders = $this->decode($params, 'headers');
 
         $this->request->headers->replace($newHeaders->toArray());
 
@@ -63,7 +56,7 @@ class RequestDecoder extends Converter
     protected function decodeRouteParameters()
     {
         $params = $this->request->route()->parameters();
-        $newRouteParams = $this->decode($params, $this->config('route_parameters'));
+        $newRouteParams = $this->decode($params, 'route_parameters');
 
         $newRouteParams->each(function ($value, $key) {
             $this->request->route()->setParameter($key, $value);
@@ -78,23 +71,9 @@ class RequestDecoder extends Converter
     protected function decodeQueryParameters()
     {
         $params = $this->request->all();
-        $newQueryParams = $this->decode($params, $this->config('query_parameters'));
+        $newQueryParams = $this->decode($params, 'query_parameters');
         $this->request->replace($newQueryParams->toArray());
 
         return $this;
-    }
-
-    /**
-     * Decode hash ids to system ids
-     *
-     * @param array $parameters
-     * @param array $config
-     * @return \Illuminate\Support\Collection
-     */
-    private function decode(array $parameters, array $config)
-    {
-        return $this->mapValues($parameters, $config, function ($value) {
-            return $this->hashids->decode($value)[0];
-        });
     }
 }
