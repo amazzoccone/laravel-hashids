@@ -56,6 +56,10 @@ abstract class Converter
             try {
                 $valid = $withoutValidation ?: $this->checker->isAnId($key);
 
+                if($this->checker->isInBlacklist($key)) {
+                    return $value;
+                }
+
                 if (is_array($value)) {
                     return $this->mapValues($value, $config, $closure, $valid); //Ex.: users_id=[13,92,7] or orders=[..]
                 }
