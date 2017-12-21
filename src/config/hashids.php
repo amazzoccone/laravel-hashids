@@ -22,28 +22,48 @@ return [
      * If whitelist key is false, it will skip and not convert anything
      */
     'customizations' => [
-        /*
-        * Request header
-        * */
-        'headers' => [
-            'whitelist' => ['id'],
-            'blacklist' => []
+        'request' => [
+            /*
+            * Request header
+            * */
+            'headers' => [
+                'whitelist' => ['id'],
+                'blacklist' => []
+            ],
+
+            /*
+             * Request route parameters
+             * */
+            'route_parameters' => [
+                'whitelist' => true,
+                'blacklist' => ['session']
+            ],
+
+            /*
+             * Request query parameters
+             * */
+            'query_parameters' => [
+                'whitelist' => ['id'],
+                'blacklist' => []
+            ]
         ],
 
-        /*
-         * Request route parameters
-         * */
-        'route_parameters' => [
-            'whitelist' => true,
-            'blacklist' => ['session']
-        ],
+        'response' => [
+            /*
+            * Request header
+            * */
+            'headers' => [
+                'whitelist' => ['id'],
+                'blacklist' => []
+            ],
 
-        /*
-         * Request query parameters
-         * */
-        'query_parameters' => [
-            'whitelist' => ['id'],
-            'blacklist' => []
-        ]
+            /*
+            * Content
+            * */
+            'content' => [
+                'whitelist' => ['id'],
+                'blacklist' => []
+            ],
+        ],
     ]
 ];
