@@ -28,7 +28,7 @@ class RequestDecoder extends Converter
      */
     public function handle($request)
     {
-        $this->request = clone $request;
+        $this->request = $request;
 
         $this->decodeHeaders()
             ->decodeRouteParameters()

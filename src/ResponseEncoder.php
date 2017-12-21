@@ -22,7 +22,7 @@ class ResponseEncoder extends Converter
      */
     public function handle($response)
     {
-        $this->response = clone $response;
+        $this->response = $response;
 
         $this->decodeHeaders()
             ->decodeContent();
