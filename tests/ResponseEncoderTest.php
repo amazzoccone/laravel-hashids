@@ -3,11 +3,12 @@
 namespace Bondacom\LaravelHashids\Tests;
 
 use Bondacom\LaravelHashids\ResponseEncoder;
+use Illuminate\Http\Response;
 
 class ResponseEncoderTest extends TestCase
 {
     /**
-     * @var Bondacom\LaravelHashids\ResponseEncoder
+     * @var \Bondacom\LaravelHashids\ResponseEncoder
      */
     public $encoder;
 
@@ -34,11 +35,11 @@ class ResponseEncoderTest extends TestCase
                 'type' => 'multiple',
             ]
         ];
-        $response = response(compact('data'), 200);
+        $response = response(compact('data'), Response::HTTP_OK);
 
         $responseEncoded = $this->encoder->handle($response);
 
-        $this->assertEquals(200, $responseEncoded->getStatusCode());
+        $this->assertEquals(Response::HTTP_OK, $responseEncoded->getStatusCode());
         $content = json_decode($responseEncoded->getContent(), true);
 
         $this->assertEquals(array_keys($content['data']), [
@@ -72,7 +73,7 @@ class ResponseEncoderTest extends TestCase
                 'description' => 'Testing'
             ]
         ];
-        $response = response(compact('data'), 200);
+        $response = response(compact('data'), Response::HTTP_OK);
 
         $responseEncoded = $this->encoder->handle($response);
         $content = json_decode($responseEncoded->getContent(), true);
@@ -102,7 +103,7 @@ class ResponseEncoderTest extends TestCase
             ]
         ];
 
-        $response = response($data, 200);
+        $response = response($data, Response::HTTP_OK);
 
         $responseEncoded = $this->encoder->handle($response);
         $content = json_decode($responseEncoded->getContent(), true);
@@ -127,7 +128,7 @@ class ResponseEncoderTest extends TestCase
             ]
         ];
 
-        $response = response($data, 200);
+        $response = response($data, Response::HTTP_OK);
 
         $responseEncoded = $this->encoder->handle($response);
         $content = json_decode($responseEncoded->getContent(), true);
@@ -135,5 +136,19 @@ class ResponseEncoderTest extends TestCase
         $this->assertEquals($data['meta'], $content['meta']);
         $this->assertNotEquals($data['data']['genders_id'], $content['data']['genders_id']);
         $this->assertTrue(is_array($content['data']['genders_id']));
+    }
+
+    /**
+     * @test
+     */
+    public function it_works_when_response_does_not_have_content()
+    {
+        $response = response('', Response::HTTP_NO_CONTENT);
+
+        $responseEncoded = $this->encoder->handle($response);
+        $content = json_decode($responseEncoded->getContent(), true);
+
+        $this->assertNull($content);
+
     }
 }

@@ -9,30 +9,36 @@ use Illuminate\Routing\Route;
 class RequestDecoderTest extends TestCase
 {
     /**
-     * @var Bondacom\LaravelHashids\RequestDecoder
+     * @var RequestDecoder
      */
-    public $decoder;
+    protected $decoder;
+
+    /**
+     * @var Request
+     */
+    protected $request;
 
     public function setUp()
     {
         parent::setUp();
 
         $this->decoder = app(RequestDecoder::class);
+        $this->request = $this->newRequest();
     }
 
     /**
-     * @param $request
-     * @param $uri
-     * @param $method
-     * @param array $parameters
-     * @return $request
+     * Get new request
+     *
+     * @return Request
      */
-    protected function simulateRequest($request, $uri, $method, array $parameters = [])
+    protected function newRequest()
     {
-        $request->setRouteResolver(function () use ($request, $uri, $method, $parameters) {
-            return (new Route($method, $uri, $parameters))->bind($request);
+        $request = Request::create('testing/' . $this->encode(1), 'POST');
+
+        $request->setRouteResolver(function () use ($request) {
+            return (new Route('POST', 'testing/{user}', []))->bind($request);
         });
-        
+
         return $request;
     }
 
@@ -41,19 +47,14 @@ class RequestDecoderTest extends TestCase
      */
     public function it_decode_headers_from_request()
     {
-        $this->markTestIncomplete('Cannot simulate request for testing purpose.');
-
-        /*$consumerId = 341;
-        $request = new Request([], [], [], [], [], ['REQUEST_URI' => 'users']);
-        $request->headers->replace([
+        $consumerId = 341;
+        $this->request->headers->replace([
             'Consumer-ID' => $this->encode($consumerId)
         ]);
-        $this->simulateRequest($request, 'GET', 'users');
 
-        $requestDecoded = $this->decoder->handle($request);
+        $this->decoder->handle($this->request);
 
-        $this->assertNotEquals($request->headers->all(), $requestDecoded->headers->all());
-        $this->assertEquals($consumerId, $requestDecoded->headers->get('Consumer-ID'));*/
+        $this->assertEquals($consumerId, $this->request->headers->get('Consumer-ID'));
     }
 
     /**
@@ -76,20 +77,28 @@ class RequestDecoderTest extends TestCase
     /**
      * @test
      */
-    public function it_decode_hash_ids()
+    public function it_decode_query_and_post_parameters_hash_ids()
     {
-        $this->markTestIncomplete('Cannot simulate request for testing purpose.');
-        /*$systemData = [
-            'id' => 1,
-            'name' => 'John',
-            'email' => 'johndoe@gmail.com',
-            'role_id' => 3,
-            'provider_id' => null
-        ];
-        $encodedData = $this->converter->encode($systemData);
+        $this->request->replace([
+            'id' => $this->encode(12),
+            'name' => 'Pepe',
+            'orders_id' => [$this->encode(8), $this->encode(9), $this->encode(11)],
+            'gender' => [
+                'id' => $this->encode(2),
+                'description' => 'F'
+            ]
+        ]);
 
-        $decodedData = $this->converter->decode($encodedData);
+        $this->decoder->handle($this->request);
 
-        $this->assertEquals($systemData, $decodedData);*/
+        $this->assertEquals([
+            'id' => 12,
+            'name' => 'Pepe',
+            'orders_id' => [8, 9, 11],
+            'gender' => [
+                'id' => 2,
+                'description' => 'F'
+            ]
+        ], $this->request->all());
     }
 }
