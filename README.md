@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/bondacom/laravel-hashids.svg?branch=master)](https://travis-ci.org/bondacom/laravel-hashids)
+[![Latest Stable Version](https://poser.pugx.org/bondacom/laravel-hashids/v/stable)](https://packagist.org/packages/bondacom/laravel-hashids)
+[![Total Downloads](https://poser.pugx.org/bondacom/laravel-hashids/downloads)](https://packagist.org/packages/bondacom/laravel-hashids)
+[![License](https://poser.pugx.org/bondacom/laravel-hashids/license)](https://packagist.org/packages/bondacom/laravel-hashids)
+
 # Laravel Hash ids
 
 ###### [FAQ](#faq) | [Contributing](https://github.com/bondacom/laravel-hashids/blob/master/CONTRIBUTING.md)
@@ -19,7 +24,7 @@ The advantages are:
 
 To use Laravel Hashids in your project, run:
 ```
-composer require Bondacom/laravel-hashids
+composer require bondacom/laravel-hashids
 ```
 
 > **Note**: For Laravel less than 5.5 remember to register manually the service provider!
