@@ -2,7 +2,7 @@
 
 ###### [FAQ](#faq) | [Contributing](https://github.com/bondacom/laravel-hashids/blob/master/CONTRIBUTING.md)
 
-> Laravel Hashids is a library which provides a clean and isolated way to have public ids in your API REST.
+> Laravel Hashids is a [Bondacom](https://bondacom.com) library which provides a clean and isolated way to have public ids in your API REST.
 
 > This package will convert all ids from requests (responses, query and route parameters, and headers), 
 so when a consumer request your API using the hash ids, this will decode it.
@@ -25,7 +25,7 @@ composer require Bondacom/laravel-hashids
 > **Note**: For Laravel less than 5.5 remember to register manually the service provider!
 
 ### Configuration
-Copy the config file into your project by running
+Copy the config file into your project. For Laravel projects run:
 ```
 php artisan vendor:publish --provider="Bondacom\LaravelHashids\Providers\LaravelHashidsServiceProvider"
 ```
